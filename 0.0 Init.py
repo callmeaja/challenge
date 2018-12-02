@@ -4,7 +4,7 @@ from nltk.corpus import stopwords
 s = set(stopwords.words('english'))
 GloveEmbeddings = {}
 emb_dim = 50
-
+GloveEmbeddings['zerovec'] = [0]*emb_dim
 # Map embeddings to each word from a pre trained model
 
 
@@ -14,7 +14,7 @@ def load_embeddings(embeddingfile):
     for line in fe:
         tokens = line.strip().split()
         word = tokens[0]
-        vec = [float(a) for a in tokens[1:]]
+        vec = tokens[1:]
         GloveEmbeddings[word] = vec
     fe.close()
 
@@ -23,11 +23,9 @@ def load_embeddings(embeddingfile):
 # Get the array representation of each text passage / query
 
 
-def concat_embeddings(text, query=False, pad_size=emb_dim, max_len=50):
+def concat_embeddings(text, query=False, max_len=50):
     # import nltk
     # p = nltk.PorterStemmer()
-
-    GloveEmbeddings['zerovec'] = [0]*pad_size
     if not query:
         filtered_text = list(filter(lambda w: not w in s, text.lower().split()))
         remaining = max_len - len(filtered_text)
@@ -37,7 +35,6 @@ def concat_embeddings(text, query=False, pad_size=emb_dim, max_len=50):
             filtered_text = filtered_text[:max_len]
     else:
         filtered_text = text.lower().split()
-      
 
     processed = ["".join(list(filter(str.isalnum, text))) for text in filtered_text]
     # singularize = [p.stem(word) for word in processed]
@@ -45,7 +42,7 @@ def concat_embeddings(text, query=False, pad_size=emb_dim, max_len=50):
 
     for i, word in enumerate(processed):
         if word in GloveEmbeddings:
-            vector_array += GloveEmbeddings[word]
+            vector_array += [float(x) for x in GloveEmbeddings[word]]
         else:
             vector_array += GloveEmbeddings['zerovec']
 
