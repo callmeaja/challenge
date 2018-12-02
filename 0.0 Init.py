@@ -23,7 +23,7 @@ def load_embeddings(embeddingfile):
 # Get the array representation of each text passage / query
 
 
-def concat_embeddings(text, query=False, max_len=50):
+def concat_embeddings(text, query=False, max_len_p=50, max_len_q=10):
     # import nltk
     # p = nltk.PorterStemmer()
     if not query:
@@ -32,9 +32,13 @@ def concat_embeddings(text, query=False, max_len=50):
         if remaining > 0:
             filtered_text += ['zerovec']*remaining
         else:
-            filtered_text = filtered_text[:max_len]
+            filtered_text = filtered_text[:max_len_p]
     else:
         filtered_text = text.lower().split()
+        if remaining > 0:
+            filtered_text += ['zerovec']*remaining
+        else:
+            filtered_text = filtered_text[:max_len_q]
 
     processed = ["".join(list(filter(str.isalnum, text))) for text in filtered_text]
     # singularize = [p.stem(word) for word in processed]
@@ -42,9 +46,9 @@ def concat_embeddings(text, query=False, max_len=50):
 
     for i, word in enumerate(processed):
         if word in GloveEmbeddings:
-            vector_array += [float(x) for x in GloveEmbeddings[word]]
+            vector_array.append([float(x) for x in GloveEmbeddings[word]])
         else:
-            vector_array += GloveEmbeddings['zerovec']
+            vector_array.append(GloveEmbeddings['zerovec'])
 
     return vector_array
 
