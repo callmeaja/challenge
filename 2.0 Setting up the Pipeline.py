@@ -1,5 +1,4 @@
 import tensorflow as tf
-import numpy as np
 
 
 class textCNN(object):
@@ -59,9 +58,9 @@ class textCNN(object):
                 name='pool'
             )
             pooled_outputs.append(pooled)
-
+        num_filters_total = 2*num_filters
         self.h_pool = tf.concat(pooled_outputs, 3)
-        self.h_pool_flat = tf.reshape(self.h_pool, [-1, num_filters])
+        self.h_pool_flat = tf.reshape(self.h_pool, [-1, num_filters_total])
 
         # Adding in dropout layer
         with tf.name_scope("dropout"):
@@ -76,8 +75,12 @@ class textCNN(object):
             l2_loss += tf.nn.l2_loss(W)
             l2_loss += tf.nn.l2_loss(b)
             self.scores = tf.nn.xw_plus_b(self.h_drop, W, b, name="scores")
+            self.predictions = tf.argmax(self.scores, 1, name='predictions')
 
         with tf.name_scope("loss"):
             losses = tf.nn.softmax_cross_entropy_with_logits(logits=self.scores, labels=self.input_y)
             self.loss = tf.reduce_mean(losses)
 
+        with tf.name_scope('accuracy'):
+            correct_predictions = tf.equal(self.predictions, tf.argmax(self.input_y, 1))
+            self.accuracy = tf.reduce_mean(tf.cast(correct_predictions, 'float'))
