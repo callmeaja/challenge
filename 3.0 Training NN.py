@@ -122,7 +122,8 @@ def train(x_train, y_train, x_test, y_test):
                     print("Saved model checkpoint to {}\n".format(path))
 
 def main(argv=None):
-    train(x_train, y_train, x_dev, y_dev)
+    execfile('Codes/1.0 Data Cleaning and Embedding.py')
+    train(x_train, y_train, x_test, y_test)
 
 if __name__ == '__main__':
     tf.app.run()

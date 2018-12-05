@@ -10,7 +10,7 @@ train_test_split = 0.7
 data = pd.read_csv('Data/data.tsv', delimiter='\t', header=None)
 data.columns = ['query_id', 'query', 'passage_text', 'label', 'passage_id']
 
-data = data[:2000]
+data = data[:100000]
 # Loading embeddings
 load_embeddings('glove.6B.50d.txt')
 
@@ -25,6 +25,8 @@ x_train = x.iloc[:int(0.6*len(x)), :]
 x_test = x.iloc[int(0.6*len(x)):, :]
 y_train = y[:int(0.6*len(x))]
 y_test = y[int(0.6*len(x)):]
+
+del x, y
 # x_query = data['query'].apply(concat_embeddings, query=True)
 # x_passage = data['passage_text'].apply(concat_embeddings)
 # y_train = data['label']
