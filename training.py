@@ -31,7 +31,8 @@ def train(x_train, y_train, x_test, y_test):
             cnn = textCNN(
                 sequence_length=50,
                 filter_size=filter_size,
-                num_filters=num_filters
+                num_filters=num_filters,
+                num_classes=2
             )
 
             # Defining training procedure

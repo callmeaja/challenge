@@ -1,9 +1,10 @@
 import pandas as pd
 import os
+import numpy as np
+from sklearn.preprocessing import OneHotEncoder
 os.chdir('E:/Competitions/Microsoft AI challenge')
 
 execfile('Codes/init.py')
-import numpy as np
 
 train_test_split = 0.7
 # Reading the data
@@ -17,14 +18,16 @@ load_embeddings('glove.6B.50d.txt')
 data['query'] = data['query'].apply(concat_embeddings, query=True)
 data['passage_text'] = data['passage_text'].apply(concat_embeddings)
 
+ohe = OneHotEncoder(sparse=False)
+
 x = data[['query', 'passage_text']]
-y = data['label']
+y = ohe.fit_transform(np.array(data['label']).reshape(-1, 1))
 del data
 
-x_train = x.iloc[:int(0.6*len(x)), :]
-x_test = x.iloc[int(0.6*len(x)):, :]
-y_train = y[:int(0.6*len(x))]
-y_test = y[int(0.6*len(x)):]
+x_train = x.iloc[:int(train_test_split*len(x)), :]
+x_test = x.iloc[int(train_test_split*len(x)):, :]
+y_train = y[:int(train_test_split*len(x))]
+y_test = y[int(train_test_split*len(x)):]
 
 del x, y
 # x_query = data['query'].apply(concat_embeddings, query=True)

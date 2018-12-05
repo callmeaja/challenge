@@ -3,11 +3,12 @@ import tensorflow as tf
 
 class textCNN(object):
 
-    def __init__(self, sequence_length, filter_size, num_filters):
+    def __init__(self, sequence_length, filter_size, num_filters, num_classes):
 
         # Extraction from Passages
         self.input_p = tf.placeholder(tf.float32, [None, 50], name="passages")
         self.input_q = tf.placeholder(tf.float32, [None, 10], name="query")
+        self.input_y = tf.placeholder(tf.float32, [None, num_classes], name="input_y")
         self.dropout_keep_prob = tf.placeholder(tf.float32, name="dropout_keep_prob")
 
         # L2 Loss Tracking
