@@ -28,13 +28,14 @@ def concat_embeddings(text, query=False, max_len_p=50, max_len_q=10):
     # p = nltk.PorterStemmer()
     if not query:
         filtered_text = list(filter(lambda w: not w in s, text.lower().split()))
-        remaining = max_len - len(filtered_text)
+        remaining = max_len_p - len(filtered_text)
         if remaining > 0:
             filtered_text += ['zerovec']*remaining
         else:
             filtered_text = filtered_text[:max_len_p]
     else:
         filtered_text = text.lower().split()
+        remaining = max_len_q - len(filtered_text)
         if remaining > 0:
             filtered_text += ['zerovec']*remaining
         else:
@@ -52,3 +53,22 @@ def concat_embeddings(text, query=False, max_len_p=50, max_len_q=10):
 
     return vector_array
 
+
+def batch_iter(data, batch_size, num_epochs, shuffle=False):
+    """
+    Generates a batch iterator for a dataset.
+    """
+    data = np.array(data)
+    data_size = len(data)
+    num_batches_per_epoch = int((len(data)-1)/batch_size) + 1
+    for epoch in range(num_epochs):
+        # Shuffle the data at each epoch
+        if shuffle:
+            shuffle_indices = np.random.permutation(np.arange(data_size))
+            shuffled_data = data[shuffle_indices]
+        else:
+            shuffled_data = data
+        for batch_num in range(num_batches_per_epoch):
+            start_index = batch_num * batch_size
+            end_index = min((batch_num + 1) * batch_size, data_size)
+            yield shuffled_data[start_index:end_index]
