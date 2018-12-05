@@ -1,12 +1,11 @@
 import tensorflow as tf
-import numpy as np
 import os
 import time
 import datetime
-from importlib.machinery import SourceFileLoader
+from pipeline import textCNN
+
 os.chdir('E:\Competitions\Microsoft AI Challenge')
 
-textCNN = SourceFileLoader('textCNN', "Codes\2.0 Setting up the Pipeline.py").load_module()
 
 # Hyperparameters
 filter_size = 3
@@ -122,7 +121,7 @@ def train(x_train, y_train, x_test, y_test):
                     print("Saved model checkpoint to {}\n".format(path))
 
 def main(argv=None):
-    execfile('Codes/1.0 Data Cleaning and Embedding.py')
+    execfile('Codes/data_cleaning.py')
     train(x_train, y_train, x_test, y_test)
 
 if __name__ == '__main__':

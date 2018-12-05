@@ -2,7 +2,7 @@ import pandas as pd
 import os
 os.chdir('E:/Competitions/Microsoft AI challenge')
 
-execfile('Codes/0.0 Init.py')
+execfile('Codes/init.py')
 import numpy as np
 
 train_test_split = 0.7
